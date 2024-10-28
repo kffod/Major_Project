@@ -1,0 +1,50 @@
+#Sample 1: Likely Bot Account
+ID: 12345
+Verified: FALSE
+Name: AutoBot123
+Description: Tweet me for updates every hour! #Automation
+Screen Name: autobot123
+Status: Updates every hour with the latest news.
+Listed Count: 5
+
+#Sample 2: Likely Not a Bot Account
+ID: 67890
+Verified: TRUE
+Name: John Doe
+Description: Just a regular guy tweeting about life and tech. #TechLover
+Screen Name: johndoe
+Status: Loving the new tech updates this week! What’s your favorite gadget?
+Listed Count: 15
+
+#Sample 3: Another Bot-Like Account
+ID: 24680
+Verified: FALSE
+Name: NewsBot9000
+Description: Follow me for the latest news updates every minute! #NewsBot
+Screen Name: newsbot9000
+Status: Bringing you the latest news every 5 minutes.
+Listed Count: 12
+
+
+#Sample 4: Human User
+ID: 13579
+Verified: TRUE
+Name: Sarah Connor
+Description: Tech enthusiast, traveler, and coffee lover ☕. Sharing my thoughts on the future of AI.
+Screen Name: sarah_conner
+Status: Had a great time exploring the new AI tech at the conference today! #AI #Future
+Listed Count: 25
+
+#Sample 5: Bot-like Keywords but Verified
+ID: 98765
+Verified: TRUE
+Name: CannabisUpdates
+Description: Get the latest updates on cannabis laws and trends every day.
+Screen Name: cannabisnewsdaily
+Status: Don't miss our latest news about cannabis laws in your area!
+Listed Count: 30
+
+
+Sample 1 and 3: Likely detected as bots due to the presence of bot-like phrases such as "tweet me," "updates every hour," and "news updates every minute."
+Sample 2 and 4: Should not be detected as bots, since they resemble typical human users with real status updates and verified accounts.
+Sample 5: This one might be tricky since the name and description contain bot-like keywords but the account is verified. It would depend on how your bot detection logic prioritizes verified status.
