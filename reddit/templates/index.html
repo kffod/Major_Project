@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reddit Bot Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+
+        header {
+            background-color: #282c34;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #282c34;
+        }
+
+        .input-container {
+            margin-bottom: 20px;
+        }
+
+        .input-container input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .input-container button {
+            padding: 10px 15px;
+            font-size: 16px;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .input-container button:hover {
+            background-color: #0056b3;
+        }
+
+        .prediction {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .prediction button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .prediction button:hover {
+            background-color: #218838;
+        }
+
+        .user-info {
+            margin-top: 20px;
+        }
+
+        .user-info table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .user-info table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        .user-info th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        .user-info th {
+            background-color: #f8f9fa;
+        }
+
+        .user-info td {
+            background-color: #f9f9f9;
+        }
+
+        .flash-pop-up {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px 20px;
+            border-radius: 5px;
+            z-index: 1000;
+            display: none;
+            font-size: 16px;
+        }
+
+        #botReport {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f1f1f1;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        #botReport h3 {
+            margin-top: 0;
+        }
+
+        #botReport textarea {
+            width: 100%;
+            height: 150px;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+
+        #botReport button {
+            padding: 10px 15px;
+            font-size: 16px;
+            border: none;
+            background-color: #28a745;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #botReport button:hover {
+            background-color: #218838;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 18px;
+        }
+
+        .success-message {
+            color: green;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Reddit Bot Detection</h1>
+    </header>
+    <main>
+        <div class="input-container">
+            <h2>Enter Reddit Username to Check for Bot Activity</h2>
+            <form method="POST" action="/predict" id="username-form">
+                <input type="text" name="screen_name" placeholder="Reddit Username" required>
+                <button type="submit">Check Bot Status</button>
+            </form>
+        </div>
+
+        {% if prediction_message %}
+        <div class="prediction">
+            <p>{{ prediction_message }}</p>
+            {% if prediction == 1 %}  <!-- Show the report button only if prediction is 1 (bot) -->
+            <button onclick="reportBot()">Report Bot</button>
+            {% endif %}
+        </div>
+        {% endif %}
+        
+
+        {% if user_info %}
+        <div class="user-info" id="user-info">
+            <h3>User Information</h3>
+            <table>
+                <tr>
+                    <th>Username</th>
+                    <td>{{ user_info['screen_name'] }}</td>
+                </tr>
+                <tr>
+                    <th>Name</th>
+                    <td>{{ user_info['name'] }}</td>
+                </tr>
+                <tr>
+                    <th>Description</th>
+                    <td>{{ user_info['description'] if user_info['description'] else 'No Description' }}</td>
+                </tr>
+                <tr>
+                    <th>Post Karma</th>
+                    <td>{{ user_info['post_karma'] }}</td>
+                </tr>
+                <tr>
+                    <th>Comment Karma</th>
+                    <td>{{ user_info['comment_karma'] }}</td>
+                </tr>
+                <tr>
+                    <th>Listed Karma</th>
+                    <td>{{ user_info['listed_count'] }}</td>
+                </tr>
+                <tr>
+                    <th>Cake Day</th>
+                    <td>{{ user_info['cake_day'] | datetimeformat }}</td>
+                </tr>
+                <tr>
+                    <th>Achievements</th>
+                    <td>{{ user_info['achievements'] | join(', ') }}</td>
+                </tr>
+                <tr>
+                    <th>Trophy Case</th>
+                    <td>{{ user_info['trophy_case'] | join(', ') }}</td>
+                </tr>
+            </table>
+        </div>
+        {% endif %}
+
+        {% if error %}
+        <div class="error-message">
+            <p>{{ error }}</p>
+        </div>
+        {% endif %}
+    </main>
+
+    <script>
+        function reportBot() {
+            const userInfo = document.getElementById('user-info');
+            if (userInfo) {
+                // Clear user info after reporting
+                userInfo.style.display = 'none';
+                document.getElementById('username-form').reset(); // Clear the form input
+                alert("Bot has been reported!");
+            }
+        }
+    </script>
+</body>
+</html>
