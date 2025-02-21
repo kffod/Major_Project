@@ -1,6 +1,0 @@
-flask
-praw
-pandas
-scikit-learn
-
- 
