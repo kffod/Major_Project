@@ -1,0 +1,26 @@
+# Start MongoDB shell
+mongosh
+
+# Show databases
+show dbs
+
+# Use your database
+use bot_detector
+
+# Show collections
+show collections
+
+# View all documents in a collection
+db.users.find()  # Replace 'users' with your collection name
+
+# Pretty print results
+db.users.find().pretty()
+
+# Count documents
+db.users.countDocuments()
+
+# Find specific documents
+db.users.find({ "is_bot": true })
+
+# Sort documents
+db.users.find().sort({ "timestamp": -1 })

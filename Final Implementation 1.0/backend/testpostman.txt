@@ -1,0 +1,71 @@
+Method: POST
+URL: {{baseUrl}}/api/generate-report
+Headers:
+  Content-Type: application/json
+Body (raw JSON):
+{
+    "screen_name": "{{username}}",
+    "post_karma": 1000,
+    "comment_karma": 500,
+    "account_age_days": 365,
+    "total_posts": 50,
+    "total_comments": 200,
+    "achievements": ["1 Year Club", "Verified Email"],
+    "is_bot": false,
+    "confidence_score": 0.85,
+    "activity_pattern": "Regular daily activity"
+}
+
+// Test Script
+pm.test("Generate report endpoint response", function () {
+    pm.response.to.have.status(200);
+    var jsonData = pm.response.json();
+    
+    pm.expect(jsonData).to.be.an('object');
+    pm.expect(jsonData).to.have.property('report');
+    pm.expect(jsonData.report).to.be.a('string');
+});
+
+Method: POST
+URL: {{baseUrl}}/api/predict
+Headers: 
+  Content-Type: application/json
+Body (raw JSON):
+{
+    "screen_name": "{{username}}"
+}
+
+// Test Script
+pm.test("Predict endpoint response", function () {
+    pm.response.to.have.status(200);
+    var jsonData = pm.response.json();
+    
+    pm.expect(jsonData).to.be.an('object');
+    pm.expect(jsonData).to.have.property('screen_name');
+    pm.expect(jsonData).to.have.property('is_bot');
+    pm.expect(jsonData).to.have.property('post_karma');
+    pm.expect(jsonData).to.have.property('comment_karma');
+});
+
+Method: POST
+URL: {{baseUrl}}/api/feedback
+Headers:
+  Content-Type: application/json
+Body (raw JSON):
+{
+    "username": "{{username}}",
+    "prediction": false,
+    "feedback": "This prediction seems incorrect. The user shows natural behavior.",
+    "confidence_score": 0.85,
+    "reported_by": "user123"
+}
+
+// Test Script
+pm.test("Feedback endpoint response", function () {
+    pm.response.to.have.status(200);
+    var jsonData = pm.response.json();
+    
+    pm.expect(jsonData).to.be.an('object');
+    pm.expect(jsonData).to.have.property('message');
+});
+
